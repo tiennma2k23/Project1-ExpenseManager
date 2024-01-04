@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Expense</title>
+    <link rel="stylesheet" th:href="@{/css/jquery-ui.css}">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            color: #333333;
+            text-align: center;
+        }
+
+        hr {
+            width: 50%;
+            margin: 20px auto;
+            border-color: #999999;
+        }
+
+        div {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        form {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 50%;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        span {
+            display: block;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<h1>Create New Expense</h1>
+<hr/>
+<div>
+    <a th:href="@{/logout}">Logout</a>
+</div>
+<form th:action="@{/save-or-update-expense}" th:object="${expense}" method="post">
+    <div class="form-group">
+        <label for="name">Expense Name:</label>
+        <select id="expenseName" name="name" class="form-control"></select>
+        <input type="text" id="newExpenseName" placeholder="New Expense Name" class="form-control"/>
+        <button type="button" onclick="addNewExpense()">Add New</button>
+    </div>
+    <br/><br/>
+    <input type="text" placeholder="Enter expense amount" th:field="*{amount}"/>
+    <span style="color: red" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></span>
+    <br/><br/>
+    <input type="text" placeholder="dd/mm/yyyy" th:field="*{dateString}" id="createdAt"/>
+    <span style="color: red" th:if="${#fields.hasErrors('dateString')}" th:errors="*{dateString}"></span>
+    <br/><br/>
+    <textarea rows="5" placeholder="Enter expense description" th:field="*{description}"></textarea>
+    <br/><br/>
+    <input type="hidden" th:field="*{id}">
+    <input type="hidden" th:field="*{expenseId}">
+
+    <input type="checkbox" id="expenseTypeChi" th:field="*{expenseType}" value="Chi" th:checked="${expense.expenseType == 'Chi' || expense.expenseType == null}"/>
+    <label for="expenseTypeChi">Chi</label>
+
+    <input type="checkbox" id="expenseTypeTieu" th:field="*{expenseType}" value="Tieu" th:checked="${expense.expenseType == 'Tieu' || expense.expenseType==null}"/>
+    <label for="expenseTypeTieu">Tieu</label>
+    <br/><br/>
+
+    <button type="submit">Submit</button>
+</form>
+
+<a th:href="@{/expenses}">Back to Expenses</a>
+
+<script th:src="@{/js/jquery.js}"></script>
+<script th:src="@{/js/jquery-ui.js}"></script>
+<script th:inline="javascript">
+    function addNewExpense() {
+        var newExpenseName = $('#newExpenseName').val();
+        if (newExpenseName.trim() !== "") {
+            $.ajax({
+                type: "POST",
+                url: "/expenseCategory/addOrUpdateExpenseCategory?name=" + newExpenseName,
+                success: function () {
+                    // Refresh expense names dropdown
+                    loadExpenseNames();
+                    // Clear the new expense name field
+                    $('#newExpenseName').val('');
+                }
+            });
+        }
+    }
+
+    function loadExpenseNames() {
+        $.ajax({
+            type: "GET",
+            url: "/expenseCategory/getExpenseNames",
+            success: function (data) {
+                var dropdown = $('#expenseName');
+                dropdown.empty();
+                $.each(data, function(index, value) {
+                    dropdown.append($('<option></option>').val(value).text(value));
+                });
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        // Load expense names when the page is loaded
+        loadExpenseNames();
+    });
+</script>
+<script th:src="@{/js/expense-form.js}"></script>
+
+</body>
+</html>
