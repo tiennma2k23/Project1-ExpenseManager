@@ -1,5 +1,4 @@
 # Expense manager
-- production: http://expensemanager-env.eba-9ehxmguk.us-east-1.elasticbeanstalk.com
 # Functions
 - Login
 - Register
