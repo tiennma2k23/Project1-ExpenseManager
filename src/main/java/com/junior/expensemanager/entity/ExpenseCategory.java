@@ -23,7 +23,4 @@ public class ExpenseCategory {
 
     private String name;
 
-    // getters and setters
-
-    // You can add other fields and methods as needed
 }
