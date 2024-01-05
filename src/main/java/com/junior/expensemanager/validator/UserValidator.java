@@ -31,11 +31,11 @@ public class UserValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         UserDTO userDTO = (UserDTO) target;
-        if(userDTO.getName().equals("") || userDTO.getName() == null) {
+        if(userDTO.getName().isEmpty()) {
             errors.rejectValue("name", "msg.empty");
         }
 
-        if(!userDTO.getEmail().equals("") && userDTO.getEmail() != null) {
+        if(!userDTO.getEmail().isEmpty()) {
             if(!validateEmail(userDTO.getEmail())) {
                 errors.rejectValue("email", "msg.invalid");
             } else {
@@ -50,7 +50,7 @@ public class UserValidator implements Validator {
             errors.rejectValue("email", "msg.empty");
         }
 
-        if(!userDTO.getPassword().equals("") && userDTO.getPassword() != null) {
+        if(!userDTO.getPassword().isEmpty()) {
             if(userDTO.getPassword().length() < 6) {
                 errors.rejectValue("password", "msg.error.password");
             }
