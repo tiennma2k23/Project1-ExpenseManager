@@ -17,6 +17,4 @@
 - MySQL
 # IDE
 - IntelliJ
-# Cloud
-- AWS
 
